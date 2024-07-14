@@ -6,7 +6,7 @@ tunnel_name := call-center-ai-$(shell hostname | sed 's/[^a-zA-Z0-9]//g' | tr '[
 tunnel_url ?= $(shell res=$$(devtunnel show $(tunnel_name) | grep -o 'http[s]*://[^"]*' | xargs) && echo $${res%/})
 # App location
 cognitive_communication_location := westeurope
-default_location := swedencentral
+default_location := francecentral
 functionapp_location := swedencentral
 openai_location := swedencentral
 search_location := francecentral
@@ -30,8 +30,8 @@ version-full:
 	@bash ./cicd/version/version.sh -g . -c -m
 
 install:
-	@echo "➡️ Installing Twilio CLI..."
-	twilio --version || brew tap twilio/brew && brew install twilio
+	# @echo "➡️ Installing Twilio CLI..."
+	# twilio --version || brew tap twilio/brew && brew install twilio
 
 	@for f in $$(find . -name "requirements*.txt"); do \
 		echo "➡️ Installing Python dependencies in $$f..."; \

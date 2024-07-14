@@ -30,6 +30,7 @@ class StyleEnum(str, Enum):
     """
 
     CHEERFUL = "cheerful"
+    SPORT = "sports_commentary_excited"
     NONE = "none"  # This is not a valid style, but we use it in the code to indicate no style
     SAD = "sad"
 

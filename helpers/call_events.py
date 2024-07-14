@@ -303,6 +303,7 @@ async def on_ivr_recognized(
             handle_recognize_text(
                 call=call,
                 client=client,
+                style=MessageStyleEnum.CHEERFUL,
                 text=await CONFIG.prompts.tts.hello(call),
             ),  # First, greet the user
             persist_coro,  # Second, persist language change for next messages, should be quick enough to be in sync with the next message
@@ -558,7 +559,7 @@ async def _handle_ivr_language(
         choices.append(
             RecognitionChoice(
                 label=lang.short_code,
-                phrases=lang.pronunciations_en,
+                phrases=lang.pronunciations,
                 tone=tones[i],
             )
         )
