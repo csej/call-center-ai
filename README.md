@@ -445,10 +445,10 @@ conversation:
     lang:
       default_short_code: "fr-FR"
       availables:
-        - pronunciations_en: ["French", "FR", "France"]
+        - pronunciations: ["French", "FR", "France"]
           short_code: "fr-FR"
           voice: "fr-FR-DeniseNeural"
-        - pronunciations_en: ["Chinese", "ZH", "China"]
+        - pronunciations: ["Chinese", "ZH", "China"]
           short_code: "zh-CN"
           voice: "zh-CN-XiaoqiuNeural"
 ```

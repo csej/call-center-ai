@@ -30,8 +30,8 @@ version-full:
 	@bash ./cicd/version/version.sh -g . -c -m
 
 install:
-	@echo "➡️ Installing Twilio CLI..."
-	twilio --version || brew tap twilio/brew && brew install twilio
+#	@echo "➡️ Installing Twilio CLI..."
+#	twilio --version || brew tap twilio/brew && brew install twilio
 
 	@for f in $$(find . -name "requirements*.txt"); do \
 		echo "➡️ Installing Python dependencies in $$f..."; \
