@@ -38,22 +38,22 @@ class LanguageModel(BaseModel):
     # See: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=tts
     availables: list[LanguageEntryModel] = [
         LanguageEntryModel(
-            pronunciations_en=["French", "FR", "France"],
+            pronunciations_en=["Français", "FR", "France"],
             short_code="fr-FR",
             voice="fr-FR-DeniseNeural",
         ),
         LanguageEntryModel(
-            pronunciations_en=["English", "EN", "United States"],
+            pronunciations_en=["Englais", "EN", "Etats-Unis"],
             short_code="en-US",
             voice="en-US-NancyNeural",
         ),
         LanguageEntryModel(
-            pronunciations_en=["Spanish", "ES", "Spain"],
+            pronunciations_en=["Espagnol", "ES", "Espagne"],
             short_code="es-ES",
             voice="es-ES-LiaNeural",
         ),
         LanguageEntryModel(
-            pronunciations_en=["Chinese", "ZH", "China"],
+            pronunciations_en=["Chinois", "ZH", "Chine"],
             short_code="zh-CN",
             voice="zh-CN-XiaoqiuNeural",
         ),

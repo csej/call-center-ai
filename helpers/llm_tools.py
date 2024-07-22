@@ -1,6 +1,4 @@
 import asyncio
-import json
-from datetime import datetime
 from html import escape
 from inspect import getmembers, isfunction
 from typing import Annotated, Awaitable, Callable, Literal
@@ -591,11 +589,10 @@ class LlmPlugins:
         - Send a confirmation, if the customer wants to have a written proof
         """
         await self.tts_callback(customer_response, self.style)
-        # success = await _sms.asend(
-        #     content=message,
-        #     phone_number=self.call.initiate.phone_number,
-        # )
-        success = True
+        success = await _sms.asend(
+            content=message,
+            phone_number=self.call.initiate.phone_number,
+        )
         if not success:
             return "Failed to send SMS"
         self.call.messages.append(
