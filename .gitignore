@@ -756,3 +756,7 @@ sbom-reports/
 
 # Azure dev tunnels local installation
 DevTunnels/
+# End of https://www.toptal.com/developers/gitignore/api/osx,linux,dotenv,eclipse,windows,visualstudio,jupyternotebooks,visualstudiocode,azurefunctions
+
+.python_packages
+.venv

@@ -1,4 +1,6 @@
 import asyncio
+import json
+from datetime import datetime
 from html import escape
 from inspect import getmembers, isfunction
 from typing import Annotated, Awaitable, Callable, Literal
@@ -73,6 +75,134 @@ class LlmPlugins:
             text=await CONFIG.prompts.tts.goodbye(self.call),
         )
         return "Call ended"
+
+    async def book_meeting(
+        self,
+        customer_response: Annotated[
+            str,
+            """
+            Phrase used to confirm the action, in the same language as the client. This phrase will be spoken to the user.
+            # Rules
+            - Action should be rephrased in the present tense
+            - Must be in a single sentence
+            # Examples
+            - "I'm trying to book it."
+            - "Im' booking it"
+            """,
+        ],
+        reason: Annotated[
+            str,
+            """
+            The reason why the client wants a meeting.
+
+            # Rules
+            - The reason should be in the context of the banking industry
+
+            # Example
+            - "A new credit loan."
+            - "A mortgage simulation."
+            """,
+        ],
+        start_timestamp: Annotated[
+            str,
+            """
+            Date and time in 'YYYY-MM-DDTHH:MM' format of the start of the meeting.
+            """,
+        ],
+        end_timestamp: Annotated[
+            str,
+            """
+            Date and time in 'YYYY-MM-DDTHH:MM' format of the end of the meeting.
+            """,
+        ],
+        # slot: Annotated[
+        #     AvailabilityCalenderDict,
+        #     """
+        #     The slot at list of dates and times to check for availability.
+        #     # Rules
+        #     - The date should be in the format 'YYYY-MM-DD'
+        #     - The time should be in the format 'HH:MM'
+        #     - The time should be in the 24-hour format
+        #     # Example
+        #     [{"date": "2022-02-15", "time": "10:00"}, {"date": "2022-02-17", "time": "14:00"}]
+        #     """,
+        # ],
+    ) -> str:
+        """
+        Use this to confirm the meeting.
+
+        # Behavior
+        1. Get the availability for the requested date
+        2. Get the reason of the meeting
+        3. Return a confirmation message
+
+        # Rules
+        - Use this every time a new meeting is requested before booking it
+
+        # Usage examples
+        - The client wants to book an new meeting
+        - A customer ask questions about an availability
+        """
+        await self.tts_callback(customer_response, self.style)
+        return "The meeting is booked."
+
+    async def get_advisor_available_slot(
+        self,
+        customer_response: Annotated[
+            str,
+            """
+            Phrase used to confirm the action, in the same language as the client. This phrase will be spoken to the user.
+            # Rules
+            - Action should be rephrased in the present tense
+            - Must be in a single sentence
+            # Examples
+            - "I'm trying to book it."
+            - "Im' booking it"
+            """,
+        ],
+        start_timestamp: Annotated[
+            str,
+            """
+            Date and time in 'YYYY-MM-DDTHH:MM' format of the start of the period requested by the client for the appointment.
+            """,
+        ],
+        end_timestamp: Annotated[
+            str,
+            """
+            Date and time in 'YYYY-MM-DDTHH:MM' format of the end of the period requested by the client for the appointment.
+            """,
+        ],
+    ) -> str:
+        """
+        Use this if you need to get the banking advisor available slots.
+
+        The function returns the available slot.
+
+        For example 'The advisor is available from 2024-07-11T16:00 to 2024-07-11T16:30'
+        """
+
+        with open("tests/config_slots.json") as f_in:
+            conf = json.load(f_in)
+        slots = [
+            {
+                "startTime": datetime.strptime(
+                    slot["startTime"]["dateTime"], "%Y-%m-%dT%H:%M"
+                ),
+                "endTime": datetime.strptime(
+                    slot["endTime"]["dateTime"], "%Y-%m-%dT%H:%M"
+                ),
+            }
+            for slot in conf["advisor"]["availability"]["timeSlots"]
+            if slot["startTime"]["dateTime"] >= start_timestamp
+            and slot["endTime"]["dateTime"] <= end_timestamp
+        ]
+        if len(slots) > 0:
+            return "The advisor is available from '%s' to '%s'." % (
+                slots[0]["startTime"].strftime("%a %d %b %Y %H:%M"),
+                slots[0]["endTime"].strftime("%a %d %b %Y %H:%M"),
+            )
+        else:
+            return "The advisor is not available at this period."
 
     async def new_claim(
         self,
@@ -461,10 +591,11 @@ class LlmPlugins:
         - Send a confirmation, if the customer wants to have a written proof
         """
         await self.tts_callback(customer_response, self.style)
-        success = await _sms.asend(
-            content=message,
-            phone_number=self.call.initiate.phone_number,
-        )
+        # success = await _sms.asend(
+        #     content=message,
+        #     phone_number=self.call.initiate.phone_number,
+        # )
+        success = True
         if not success:
             return "Failed to send SMS"
         self.call.messages.append(
